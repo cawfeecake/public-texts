@@ -1,0 +1,19 @@
+name: get and encrypt from private repo
+on:
+  pull_request:
+  workflow_dispatch:
+jobs:
+  get-and-encrypt:
+    runs-on: ubuntu-latest
+    steps:
+    - name: checkout private repo
+      uses: actions/checkout@v3
+      with:
+        repository: cawfeecake/secret-texts
+        ssh-key: ${{ secrets.SSH_KEY_SECRET_TEXTS }}
+    - name: encrypt secret file
+      run:
+        ENCRYPTED=$(gpg --batch --output secret.txt.gpg --passphrase password --symmetric secret.txt)
+        echo "$ENCRYPTED"
+    - run:
+        ls -al
